@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+{% load i18n admin_static admin_modify %}
+{% load url from future %}
+{% load admin_urls %}
+
+{% block extrahead %}{{ block.super }}
+{% url 'admin:jsi18n' as jsi18nurl %}
+<script type="text/javascript" src="{{ jsi18nurl|default:"../../../jsi18n/" }}"></script>
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+{% endblock %}
+{% endif %}
+
+{% block content %}<h1>{% trans "Associate IP" %}</h1><div id="content-main">
+<form enctype="multipart/form-data" action="" method="post" id="instance_form">{% csrf_token %}
+<div>
+    <fieldset class="module aligned">
+        <div class="form-row field-ip">
+            <div>
+                <label for="id_ip">Ip:</label>
+                <input id="id_ip" class="vTextField" type="text" maxlength="200" name="ip" value="{{ ip }}" readonly="true">
+            </div>
+        </div>
+        <div class="form-row field-instance">
+            <div>
+                <label for="id_instance">Instance:</label>
+                <select id="id_instance" name="instance">
+                    {% for instance in instance_list %}
+                    <option value="{{ instance.id }}">{{ instance.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </fieldset>
+    <div class="submit-row">
+        <input class="default" type="submit" onclick="this.form.action='/admin/floatingips/floatingip/associate_save/index/'" name="_save" value="Save">
+    </div>
+</div>
+</form></div>
+{% endblock %}

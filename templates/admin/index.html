@@ -1,0 +1,110 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+{% if app_list %}
+    {% for app in app_list %}
+        <div class="module" style="width:300px">
+        <table summary="{% blocktrans with name=app.name %}Models available in the {{ name }} application.{% endblocktrans %}" style="width:300px">
+        <caption><a href="{{ app.app_url }}" class="section">{% blocktrans with name=app.name %}{{ name }}{% endblocktrans %}</a></caption>
+        {% for model in app.models %}
+            <tr>
+            {% if model.admin_url %}
+                {% ifequal model.name 'Instances' %}
+                <th scope="row"><a href="#" onclick="document.getElementById('frm_app').src='{{ model.admin_url }}index/'">{{ model.name }}</a></th>
+                {% else %}{% ifequal model.name 'Floatingips' %}
+                <th scope="row"><a href="#" onclick="document.getElementById('frm_app').src='{{ model.admin_url }}index/'">{{ model.name }}</a></th>
+                {% else %}
+                <th scope="row"><a href="#" onclick="document.getElementById('frm_app').src='{{ model.admin_url }}'">{{ model.name }}</a></th>
+                {% endifequal %}{% endifequal %}
+            {% else %}
+                <th scope="row">{{ model.name }}</th>
+            {% endif %}
+
+            {% if model.add_url %}
+                {% ifequal model.name 'Instances' %}
+                <td><a href="#" onclick="document.getElementById('frm_app').src='{{ model.add_url }}index/'" class="addlink">{% trans 'Add' %}</a></td>
+                {% else %}{% ifequal model.name 'Floatingips' %}
+                <td><a href="#" onclick="document.getElementById('frm_app').src='{{ model.add_url }}index/'" class="addlink">{% trans 'Add' %}</a></td>
+                {% else %}
+                <td><a href="#" onclick="document.getElementById('frm_app').src='{{ model.add_url }}'" class="addlink">{% trans 'Add' %}</a></td>
+                {% endifequal %}{% endifequal %}
+            {% else %}
+                <td>&nbsp;</td>
+            {% endif %}
+
+            {% if model.admin_url %}
+                {% ifequal model.name 'Instances' %}
+                <td><a href="#" onclick="document.getElementById('frm_app').src='{{ model.admin_url }}index/'" class="changelink">{% trans 'Change' %}</a></td>
+                {% else %}{% ifequal model.name 'Floatingips' %}
+                <td><a href="#" onclick="document.getElementById('frm_app').src='{{ model.admin_url }}index/'" class="changelink">{% trans 'Change' %}</a></td>
+                {% else %}
+                <td><a href="#" onclick="document.getElementById('frm_app').src='{{ model.admin_url }}'" class="changelink">{% trans 'Change' %}</a></td>
+                {% endifequal %}{% endifequal %}
+            {% else %}
+                <td>&nbsp;</td>
+            {% endif %}
+            </tr>
+        {% endfor %}
+        </table>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>{% trans "You don't have permission to edit anything." %}</p>
+{% endif %}
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<script type="text/javascript" language="javascript">
+    function iFrameHeight() {
+        var ifm = document.getElementById("frm_app");
+        var subWeb = document.frames ? document.frames["frm_app"].document : ifm.contentDocument;
+        if(ifm != null && subWeb != null) {
+            ifm.height = subWeb.body.scrollHeight;
+        }
+    }
+</script>
+<div id="content-related" style="position:absolute;left:327px;width:72%">
+    <!--<div class="module" id="recent-actions-module">
+        <h2>{% trans 'Recent Actions' %}</h2>
+        <h3>{% trans 'My Actions' %}</h3>
+            {% load log %}
+            {% get_admin_log 10 as admin_log for_user user %}
+            {% if not admin_log %}
+            <p>{% trans 'None available' %}</p>
+            {% else %}
+            <ul class="actionlist">
+            {% for entry in admin_log %}
+            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                {% if entry.is_deletion or not entry.get_admin_url %}
+                    {{ entry.object_repr }}
+                {% else %}
+                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                {% endif %}
+                <br/>
+                {% if entry.content_type %}
+                    <span class="mini quiet">{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span>
+                {% else %}
+                    <span class="mini quiet">{% trans 'Unknown content' %}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+    </div>-->
+    <div>
+        <iframe id="frm_app" name="frm_app" src="" width="100%" onload="iFrameHeight()" frameborder="0" scrolling="no"></ifrmeame>
+    </div>
+</div>
+{% endblock %}

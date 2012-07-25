@@ -1,0 +1,9 @@
+{% load i18n %}
+<div class="submit-row">
+    {% ifequal opts.verbose_name 'instance' %}
+    <input type="submit" value="{% trans 'Create' %}" class="default" name="_save" onclick="this.form.action='/admin/instances/instance/save/index/'"/>
+    {% endifequal %}
+    {% ifequal opts.verbose_name 'floatingip' %}
+    <input type="submit" value="{% trans 'Create' %}" class="default" name="_save" onclick="this.form.action='/admin/floatingips/floatingip/save/index/'"/>
+    {% endifequal %}
+</div>
